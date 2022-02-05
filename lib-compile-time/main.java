@@ -8,9 +8,7 @@ import java.util.*;
 
 public class Main
 {
-    public static void main(String[] args) {
-        System.out.println("Welcome to Online IDE!! Happy Coding :)");
-        
+    public static void main(String[] args) {        
         Map<String, Integer> compileTime = new HashMap<>();
         compileTime.put("A", 1);
         compileTime.put("B", 3);
@@ -39,9 +37,9 @@ public class Main
         // 1) a map from a lib to its dependents
         // 2) a map from a lib to the number of remaining deps
         // 3) Find all libs.
-        Map<String, List<String>> libToDependents = new HashMap<>();
-        Map<String, Integer> libToRemainingDeps = new HashMap<>();
-        Set<String> allLibs = new HashSet<>();
+        Map<String, List<String>> libToDependents = new HashMap<>();  // To reduce the indegree of its dependents.
+        Map<String, Integer> libToRemainingDeps = new HashMap<>();    // To store the indegree.
+        Set<String> allLibs = new HashSet<>();  // To find the lib w/o any dependencies.
         
         for (String lib : deps.keySet()) {
             allLibs.add(lib);
@@ -56,13 +54,11 @@ public class Main
                 libToDependents.put(dep, dependents);
             }
         }
-        System.out.println("libToDependents: " + libToDependents);
         
         // Find the libs w/o deps.
         Queue<LibAndTime> queue = new PriorityQueue<>();
         for (String lib : allLibs) {
             if (!deps.containsKey(lib)) {
-                System.out.println(lib + " doesn't have any deps");
                 queue.offer(new LibAndTime(lib, compileTime.get(lib)));
             }
         }
@@ -73,42 +69,43 @@ public class Main
         
         Queue<LibAndTime> nextQueue = new PriorityQueue<>();
         while (!queue.isEmpty()) {
+            // This loop will produce a new line of result. 
             StringBuilder curLine = new StringBuilder();
-            int minTime = queue.peek().remainingTime;
-            System.out.println("minTime: " + minTime);
+            // Because we use PriortyQueue(min heap), the peek one requires the least time to compile.
+            int minTime = queue.peek().remainingTime; 
             curLine.append(minTime);
             while (!queue.isEmpty()) {
+                // In this while loop, we pop out all libs in the queue. Those libs are all ready to compile. 
                 LibAndTime libToRun = queue.poll();
                 // Add it to the result.
                 curLine.append("," + libToRun.name);
                 if (libToRun.remainingTime == minTime) {
-                    System.out.println(libToRun.name + " can finish");
                     // This lib can finish in this round. Update the libToRemainingDeps to find next candidates.
                     for (String dependent : libToDependents.getOrDefault(libToRun.name, new ArrayList<>())) {
-                        System.out.println("Reducing the incomng edges for " + dependent);
                         int remainingDeps = libToRemainingDeps.get(dependent) - 1;
                         libToRemainingDeps.put(dependent, remainingDeps);
                         if (remainingDeps == 0) {
-                            System.out.println(dependent + " can run now");
                             nextQueue.offer(new LibAndTime(dependent, compileTime.get(dependent)));
                         }
                     }
-                } else { // Still need more time to compile. Add to the nextQueue.
+                } else { 
+                    // Still need more time to compile. Add to the nextQueue.
                     libToRun.remainingTime -= minTime;
                     nextQueue.offer(libToRun);
                 }
             }
             result.add(curLine.toString());
-            // cur Queue is process. Need to process the nextQueue.
+            // cur Queue is processed. Need to process the nextQueue.
             queue = nextQueue;
             nextQueue = new PriorityQueue<>();
         }
         return result;
     }   
     
+    // The data structure used in the PriorityQueue.
     public static class LibAndTime implements Comparable<LibAndTime> {
       public String name;
-      public int remainingTime;
+      public int remainingTime; // How much more time the lib needs to compile.
 
       public LibAndTime(String name, int remainingTime) {
           this.name = name;
