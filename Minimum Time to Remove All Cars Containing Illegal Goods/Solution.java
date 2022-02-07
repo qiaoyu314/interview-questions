@@ -11,11 +11,7 @@ class Solution {
         dpL.add(0);
         for (int i = 0; i< c.length; i++) {
             if (c[i] == '1') {
-                if (dpL.size() == 1) {
-                    dpL.add(Math.min(2, i + 1));
-                } else {
-                    dpL.add(Math.min(i+1, dpL.get(dpL.size() - 1) + 2));
-                }
+                dpL.add(Math.min(i+1, dpL.get(dpL.size() - 1) + 2));
             }
         }
         
@@ -23,11 +19,7 @@ class Solution {
         dpR.add(0);
         for (int i = c.length - 1; i > -1; i--) {
             if (c[i] == '1') {
-                if (dpR.size() == 1) {
-                    dpR.add(Math.min(2, c.length - i));
-                } else {
-                    dpR.add(Math.min(c.length - i, dpR.get(dpR.size() - 1) + 2));
-                }
+                dpR.add(Math.min(c.length - i, dpR.get(dpR.size() - 1) + 2));
             }
         }
         
