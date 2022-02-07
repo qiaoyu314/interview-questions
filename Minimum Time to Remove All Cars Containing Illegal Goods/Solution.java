@@ -2,11 +2,10 @@ class Solution {
     public int minimumTime(String s) {
         char[] c = s.toCharArray();
         
-        // dpL[i] is the min cost of removing [1st, ith] 1s from the left size. 
+        // dpL[i] is the min cost of removing [1st, ith] "1" from the left side. 
         // We have two choise:
         // 1) Removing all cars on the left. 
         // 2) Removing it from the middle. 
-        
         List<Integer> dpL = new ArrayList<>();
         dpL.add(0);
         for (int i = 0; i< c.length; i++) {
@@ -15,6 +14,7 @@ class Solution {
             }
         }
         
+        // dpR[i] is the min cost of removing [1st, ith] "1" from the right side. 
         List<Integer> dpR = new ArrayList<>();
         dpR.add(0);
         for (int i = c.length - 1; i > -1; i--) {
