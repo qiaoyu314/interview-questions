@@ -76,6 +76,11 @@ class Solution {
     
     private void rotate(Robot robot, Direction curDir, Direction desiredDir) {
         int diff = desiredDir.value - curDir.value;
+        
+        // Little optimization :)
+        if (diff == 3) diff = -1;
+        if (diff == -3) diff = 1;
+ 
         for (int i = 0; i < Math.abs(diff); i++ ) {
             if (diff > 0) {
                 robot.turnRight();  
