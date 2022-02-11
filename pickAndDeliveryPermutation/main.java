@@ -36,6 +36,7 @@ public class Main
                 System.out.println("Valid");
                 swap(curList, index, i);
                 dfs(index+1, n, picked, curList, result);
+                swap(curList, index, i); // ！！！ Don't forget to swap back.
             } else if (toSwap.startsWith("P")) {
                 System.out.println("Valid because it is a pickup");
                 // toSwap is a pickup
@@ -44,6 +45,7 @@ public class Main
                 swap(curList, index, i);
                 dfs(index+1, n, picked, curList, result);
                 picked[pIndex] = false;
+                swap(curList, index, i); // ！！！ Don't forget to swap back.
             } else {
               System.out.println("Invalid swap");  
             }
